@@ -23,7 +23,7 @@ def main():
         cmd = f"pandoc -o {args.output} --print-default-data-file reference.docx"
         print("需要另存为.docx一次，才能使用一些高级功能，如：主题")
     else:
-        cmd = f"pandoc --defaults={args.defaults} '{args.input}' -o '{args.output}'"
+        cmd = f"pandoc --defaults={args.defaults} --resource-path='{os.path.dirname(args.input)}' '{args.input}' -o '{args.output}'"
         print(cmd)
     os.system(cmd)
 
