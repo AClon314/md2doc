@@ -1,0 +1,9 @@
+[submodule "conf/markdownpptx"]
+	path = conf/markdownpptx
+	url = https://github.com/spotthediff/markdownpptx.git
+[submodule "conf/pandoc_word_template"]
+	path = conf/pandoc_word_template
+	url = https://github.com/Achuan-2/pandoc_word_template.git
+[submodule "conf/pagebreak"]
+	path = conf/pagebreak
+	url = https://github.com/pandoc-ext/pagebreak.git

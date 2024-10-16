@@ -1,0 +1,13 @@
+filters:
+  - conf/pagebreak/pagebreak.lua
+  - conf/enstyle-list.lua
+
+toc: true
+# number-sections: true
+# preserve-tabs: true
+reference-doc: conf/ncu.docx
+# reference-doc: conf/pandoc_word_template/templates_标题编号.docx
+
+citeproc: true
+bibliography: ref.bib
+csl: conf/china-national-standard-gb-t-7714-2015-numeric.csl
