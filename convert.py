@@ -23,13 +23,13 @@ def main():
         cmd = f"pandoc -o {args.output} --print-default-data-file reference.docx"
         print("需要另存为.docx一次，才能使用一些高级功能，如：主题")
     else:
-        cmd = f"pandoc --defaults={args.defaults} {args.input} -o {args.output}"
+        cmd = f"pandoc --defaults={args.defaults} '{args.input}' -o '{args.output}'"
         print(cmd)
     os.system(cmd)
 
     yn = input(f"📂 Open {args.output} [Y/n]: ")
     if yn.lower() in ["", "y"]:
-        os.system(f"open {args.output}")
+        os.system(f'open "{args.output}"')
 
 
 if __name__ == "__main__":
