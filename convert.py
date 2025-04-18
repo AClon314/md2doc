@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import os
 import argparse
+import webbrowser
 
 
 def main():
@@ -19,7 +20,7 @@ def main():
         args.output = os.path.splitext(args.input)[0] + '.docx'
 
     if args.diy:
-        args.output="conf/diy_template.docx"
+        args.output = "conf/diy_template.docx"
         cmd = f"pandoc -o {args.output} --print-default-data-file reference.docx"
         print("需要另存为.docx一次，才能使用一些高级功能，如：主题")
     else:
@@ -29,7 +30,7 @@ def main():
 
     yn = input(f"📂 Open {args.output} [Y/n]: ")
     if yn.lower() in ["", "y"]:
-        os.system(f'open "{args.output}"')
+        webbrowser.open(args.output)
 
 
 if __name__ == "__main__":
