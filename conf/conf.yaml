@@ -1,6 +1,7 @@
 filters:
   - conf/pagebreak/pagebreak.lua
   - conf/enstyle-list.lua
+  - mermaid-filter
 
 toc: true
 # number-sections: true

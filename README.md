@@ -21,11 +21,18 @@ marp: false
 | 摘要
 :::
 
-上面的摘要标题使用了 `custom-style` 而非直接使用 `##` 标题是为了**防止被自动编号**。使用 `{.unnumbered}`/`{-}` 尽管可以实现标题不会被编号，但是下一个标题的编号**仍**然会算上这个标题**继续编号**，所以使用了 `custom-style` 直接指定 Word 样式。
+~~上面的摘要标题使用了 `custom-style` 而非直接使用 `##` 标题是为了**防止被自动编号**。使用 `{.unnumbered}`/`{-}` 尽管可以实现标题不会被编号，但是下一个标题的编号**仍**然会算上这个标题**继续编号**，所以使用了 `custom-style` 直接指定 Word 样式。~~
+
+安装：
+```sh
+npm i -g mermaid-filter
+sudo dnf install librsvg2-tools # linux 需要安装rsvg-convert来支持Svg
+git clone https://github.com/AClon314/md2doc
+```
 
 在同目录下运行：
 ```sh
-./convert.py input.md
+./convert.py README.md
 ```
 `./convert.py -h` 查看帮助
 `./conver.py --diy` 可以导出docx模板，记得再另存为一次。
@@ -60,7 +67,7 @@ Write abstract here.
 ##### Heading 5
 ###### Heading 6
 首段落 First Paragraph.
-正文Normal, 正文字体Body Text. `Verbatim Char代码字体` [超链接Hyperlink](https://github.com/AClon "source") 脚注Footnote [^1]
+正文Normal, 正文字体Body Text. `Verbatim Char代码字体` [超链接Hyperlink](https://github.com/AClon314 "mouse-over-hint") 脚注Footnote [^1]
 
 [^1]: footnote.
 
@@ -90,18 +97,27 @@ Write abstract here.
 
 
 ::: {custom-style="Figure"}
-|a|b|c|
-|:-:|:-:|:-:|
-|1|2|3|
+|   a   |   b   |   c   |
+| :---: | :---: | :---: |
+|   1   |   2   |   3   |
 Figure
 :::
 
 ::: {custom-style="Figure"}
-![invert]()
+![invert](https://api.star-history.com/svg?repos=AClon314/md2doc&type=Date)
 Figure
 :::
 
-```py
+```{.mermaid format=svg}
+zenuml
+    title Declare participant (optional)
+    Bob
+    Alice
+    Alice->Bob: Hi Bob
+    Bob->Alice: Hi Alice
+```
+
+```python
 #!/usr/bin/env python
 import os
 
