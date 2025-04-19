@@ -25,8 +25,8 @@ marp: false
 
 安装：
 ```sh
-npm i -g mermaid-filter
-sudo dnf install librsvg2-tools # linux 需要安装rsvg-convert来支持Svg
+npm install -g pandoc-mermaid-chartjs-filter
+sudo dnf install giflib-devel # linux依赖：apt install libgif-dev; yay giflib
 git clone https://github.com/AClon314/md2doc
 ```
 
@@ -109,12 +109,51 @@ Figure
 :::
 
 ```{.mermaid format=svg}
+%%{init:{"flowchart":{"htmlLabels":false}}}%%
+flowchart LR
+    A[Source] --> B{Condition}
+```
+
+```mermaid
 zenuml
     title Declare participant (optional)
     Bob
     Alice
     Alice->Bob: Hi Bob
     Bob->Alice: Hi Alice
+```
+
+```chartjs
+{
+  "type": "pie",
+  "data": {
+    "labels": [
+      "Red",
+      "Blue",
+      "Yellow"
+    ],
+    "datasets": [
+      {
+        "data": [
+          300,
+          50,
+          100
+        ],
+        "backgroundColor": [
+          "#FF6384",
+          "#36A2EB",
+          "#FFCE56"
+        ],
+        "hoverBackgroundColor": [
+          "#FF6384",
+          "#36A2EB",
+          "#FFCE56"
+        ]
+      }
+    ]
+  },
+  "options": {}
+}
 ```
 
 ```python
