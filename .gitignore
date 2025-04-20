@@ -4,3 +4,6 @@
 /*.ppt
 /*.log
 /*.err
+/.*
+/*.md
+!/README.md
