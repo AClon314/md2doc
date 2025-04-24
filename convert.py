@@ -1,16 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from calendar import c
 import re
 import os
 import argparse
 import webbrowser
 PATTERN = {
-    'footnote': (r'\[\^(.+?)\]', '[^{}]'),
     'photo': (r"""\n!\[(.*) ?(.*)\]\(([^ \t\r\n]+) ?['"]?(.*)['"]?\)\n""", """\n
 ::: {{custom-style="Figure"}}
-![图{i} 	 {name}]({url} '图{i} {name} {hint}'){{ width=80% }}
+![图{chapter}-{i} 	 {name}]({url} '图{i} {name} {hint}'){{ width=80% }}
 :::\n
 """),
+    '图': (r"\n\n图\{\} ?(.*)\n", "\n\n图{chapter}-{i} {name}\n")
 }
 def Match(key: str, text: str): return re.search(PATTERN[key][0], text)
 
@@ -24,25 +25,39 @@ def sub(filename: str):
     with open(filename, 'r', encoding='utf-8') as f:
         text = f.read()
 
-    idx = 1
-    match = re.findall(PATTERN['footnote'][0], text)
-    for m in match:
-        From = re.escape(PATTERN['footnote'][1].format(m))
-        To = PATTERN['footnote'][1].format(idx)
-        # print(f"替换脚注：{From} -> {To}")
-        text = re.sub(From, To, text)
-        idx += 1
-
-    idx = 1
+    ch_old = 0
     match = Match('photo', text)
     while match:
         g = list(match.groups())
+        ch = len(re.findall(r'\n# [一-龟]+\n', text[:match.start()]))
+        if ch != ch_old:
+            idx = 1
+            ch_old = ch
         From = re.escape(match.group())
-        To = PATTERN['photo'][1].format(name=g[0], url=g[2], hint=g[3], i=idx)
-        print(f"替换图片 {g}：{match.group()} -> {To}", end='')
+        To = PATTERN['photo'][1].format(name=g[0], url=g[2], hint=g[3], i=idx, chapter=ch)
+        # print(f"图 {g}：{match.group()} -> {To}", end='')
         text = re.sub(From, To, text)
         match = Match('photo', text)
         idx += 1
+
+    ch_old = 0
+    match = Match('图', text)
+    while match:
+        g = list(match.groups())
+        ch = len(re.findall(r'\n# [一-龟]+\n', text[:match.start()]))
+        if ch != ch_old:
+            idx = 1
+            ch_old = ch
+        From = re.escape(match.group())
+        To = PATTERN['图'][1].format(name=g[0], i=idx, chapter=ch)
+        # print(f"图 {g}：{match.group()} -> {To}", end='')
+        text = re.sub(From, To, text)
+        match = Match('图', text)
+        idx += 1
+
+    match = re.findall(r"\n# (.+)\n", text)
+    for m in match:
+        text = re.sub(f"\n# {m}\n", r"\n\\pagebreak\n# " + m + '\n', text)
 
     new_file = 'doc_' + os.path.splitext(filename)[0] + '.md'
     with open(new_file, 'w', encoding='utf-8') as f:
@@ -62,6 +77,7 @@ def main():
     args = parser.parse_args()
 
     Input = sub(args.input)
+    # return
 
     if not args.output:
         args.output = os.path.splitext(args.input)[0] + '.docx'
