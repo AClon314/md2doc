@@ -1,19 +1,40 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from calendar import c
+import heapq
 import re
 import os
 import argparse
 import webbrowser
+def T(t='图'): return ("\n" + t + r"\{\} ?(.*)\n", "\n" + t + "{chapter}-{i} {name}\n")
+def Match(key: str, text: str): return re.search(PATTERN[key][0], text)
+
+
 PATTERN = {
     'photo': (r"""\n!\[(.*) ?(.*)\]\(([^ \t\r\n]+) ?['"]?(.*)['"]?\)\n""", """\n
 ::: {{custom-style="Figure"}}
 ![图{chapter}-{i} 	 {name}]({url} '图{i} {name} {hint}'){{ width=80% }}
 :::\n
 """),
-    '图': (r"\n\n图\{\} ?(.*)\n", "\n\n图{chapter}-{i} {name}\n")
+    '图': T(),
+    'table': (r"<!--(.+)-->(\n.*\n\| *[:-].*\n[\s\S]*?\n)\n", """\n
+::: {{custom-style="Figure"}}
+表{chapter}-{i} 	 {0}
+{1}
+:::\n
+"""),
+    '表': T('表'),
 }
-def Match(key: str, text: str): return re.search(PATTERN[key][0], text)
+RULES = {
+    'photo': {
+        'name': 0,
+        'url': 2,
+        'hint': 3,
+    },
+    '图': {
+        'name': 0
+    },
+}
 
 
 def sub(filename: str):
@@ -25,35 +46,15 @@ def sub(filename: str):
     with open(filename, 'r', encoding='utf-8') as f:
         text = f.read()
 
-    ch_old = 0
-    match = Match('photo', text)
-    while match:
-        g = list(match.groups())
-        ch = len(re.findall(r'\n# [一-龟]+\n', text[:match.start()]))
-        if ch != ch_old:
-            idx = 1
-            ch_old = ch
-        From = re.escape(match.group())
-        To = PATTERN['photo'][1].format(name=g[0], url=g[2], hint=g[3], i=idx, chapter=ch)
-        # print(f"图 {g}：{match.group()} -> {To}", end='')
-        text = re.sub(From, To, text)
-        match = Match('photo', text)
-        idx += 1
+    queue = []
+    push(queue, 'photo', Match('photo', text))
+    push(queue, '图', Match('图', text))
+    text = _sub_priority(text, queue)
 
-    ch_old = 0
-    match = Match('图', text)
-    while match:
-        g = list(match.groups())
-        ch = len(re.findall(r'\n# [一-龟]+\n', text[:match.start()]))
-        if ch != ch_old:
-            idx = 1
-            ch_old = ch
-        From = re.escape(match.group())
-        To = PATTERN['图'][1].format(name=g[0], i=idx, chapter=ch)
-        # print(f"图 {g}：{match.group()} -> {To}", end='')
-        text = re.sub(From, To, text)
-        match = Match('图', text)
-        idx += 1
+    queue = []
+    push(queue, 'table', Match('table', text))
+    push(queue, '表', Match('表', text))
+    text = _sub_priority(text, queue)
 
     match = re.findall(r"\n# (.+)\n", text)
     for m in match:
@@ -63,6 +64,44 @@ def sub(filename: str):
     with open(new_file, 'w', encoding='utf-8') as f:
         f.write(text)
     return new_file
+
+
+def push(queue: list, key: str, match: re.Match | None):
+    heapq.heappush(queue, (match.start(), key, match)) if match else None
+
+
+def _sub_priority(text, queue):
+    idx = 1
+    ch_old = 0
+    while queue:
+        _, key, match = heapq.heappop(queue)
+        g = list(match.groups())
+        ch = len(re.findall(r'\n# [一-龟\w]+\n', text[:match.start()]))
+        if ch != ch_old:
+            idx = 1
+            ch_old = ch
+
+        From, To = From_To(match, key, ch, idx, g)
+        text = re.sub(From, To, text)
+        idx += 1
+        # print(f"☀️替换：{From} => {To}") if key == 'table' else None
+
+        next_match = Match(key, text)
+        heapq.heappush(queue, (next_match.start(), key, next_match)) if next_match else None
+    return text
+
+
+def From_To(match: re.Match, key, chapter, idx, group: list[str]):
+    rule = RULES.get(key, {})
+    kw = {k: group[v] for k, v in rule.items()}
+    From, To = _From_To(match, key, chapter, idx, *group, **kw)
+    return From, To
+
+
+def _From_To(match: re.Match, key, chapter, idx, *args, **kwargs):
+    From = re.escape(match.group())
+    To = PATTERN[key][1].format(*args, i=idx, chapter=chapter, **kwargs)
+    return From, To
 
 
 def main():
@@ -77,7 +116,6 @@ def main():
     args = parser.parse_args()
 
     Input = sub(args.input)
-    # return
 
     if not args.output:
         args.output = os.path.splitext(args.input)[0] + '.docx'

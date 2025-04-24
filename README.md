@@ -94,14 +94,10 @@ Write abstract here.
   - 12
 - 2
 
-
-
-::: {custom-style="Figure"}
 |   a   |   b   |   c   |
 | :---: | :---: | :---: |
 |   1   |   2   |   3   |
-Figure
-:::
+: simple_tables see https://pandoc.org/chunkedhtml-demo/8.9-tables.html
 
 ::: {custom-style="Figure"}
 ![invert](https://api.star-history.com/svg?repos=AClon314/md2doc&type=Date)
@@ -121,6 +117,12 @@ zenuml
     Alice
     Alice->Bob: Hi Bob
     Bob->Alice: Hi Alice
+```
+
+```plantuml
+@startuml
+Bob->Alice: Hi Alice
+@enduml
 ```
 
 ```chartjs
