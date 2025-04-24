@@ -1,6 +1,7 @@
 ---
 link-citations: true
 link-bibliography: true
+plantuml-format: svg
 marp: false
 ---
 \pagebreak
@@ -23,13 +24,33 @@ marp: false
 
 ~~上面的摘要标题使用了 `custom-style` 而非直接使用 `##` 标题是为了**防止被自动编号**。使用 `{.unnumbered}`/`{-}` 尽管可以实现标题不会被编号，但是下一个标题的编号**仍**然会算上这个标题**继续编号**，所以使用了 `custom-style` 直接指定 Word 样式。~~
 
-安装：
+## 安装 Install
 ```sh
 npm install -g pandoc-mermaid-chartjs-filter
 sudo dnf install giflib-devel # linux依赖：apt install libgif-dev; yay giflib
+
+pip install pandoc-plantuml-filter
+sudo dnf install graphviz plantuml # linux依赖，如果你不想安装plantuml依赖，你可以手动下载.jar包，详见下方
+
 git clone https://github.com/AClon314/md2doc
 ```
 
+### plantuml.jar
+linux系统，windows用户也是类似的。
+
+1. 保证`java`与`graphviz`已安装：`java --version`
+2. 手动下载~~最新的~~`plantuml.jar`: https://sourceforge.net/projects/plantuml/files/plantuml.jar/download
+3. 在任意属于`$PATH`的路径下创建`plantuml`文件，没有后缀名：
+```sh
+#!/bin/bash
+java -jar $HOME/plantuml.jar "$@"
+```
+4. 设置执行权限
+```sh
+chmod +x ~/.local/bin/plantuml
+```
+
+## 用法 Usage
 在同目录下运行：
 ```sh
 ./convert.py README.md
@@ -94,15 +115,33 @@ Write abstract here.
   - 12
 - 2
 
-|   a   |   b   |   c   |
-| :---: | :---: | :---: |
-|   1   |   2   |   3   |
+|   a   |   b   |
+| :---: | :---: |
+|   1   |   2   |
 : simple_tables see https://pandoc.org/chunkedhtml-demo/8.9-tables.html
+
+<!-- description -->
+|   a   |   b   |
+| :---: | :---: |
+|   1   |   2   |
+
+::: {custom-style="Figure"}
+|   a   |   b   |
+| :---: | :---: |
+|   1   |   2   |
+表{} 表名
+:::
 
 ::: {custom-style="Figure"}
 ![invert](https://api.star-history.com/svg?repos=AClon314/md2doc&type=Date)
 Figure
 :::
+
+<!-- description -->
+```mermaid
+flowchart LR
+    A[Source] --> B{Condition}
+```
 
 ```{.mermaid format=svg}
 %%{init:{"flowchart":{"htmlLabels":false}}}%%

@@ -2,6 +2,7 @@ filters:
   - conf/pagebreak/pagebreak.lua
   - conf/enstyle-list.lua
   - chart-filter
+  - pandoc-plantuml
   # - mermaid-filter
 
 toc: true

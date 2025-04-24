@@ -1,29 +1,31 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from calendar import c
-import heapq
 import re
 import os
+import heapq
 import argparse
 import webbrowser
-def T(t='图'): return ("\n" + t + r"\{\} ?(.*)\n", "\n" + t + "{chapter}-{i} {name}\n")
+def Alt(t='图'): return ("\n" + t + r"\{\} ?(.*)\n", "\n" + t + "{chapter}-{i} {name}\n")
+def CodeFigure(lang=r'mermaid|plantuml|chartjs'): return (r"<!--(.*?)-->\n```.*" + rf"({lang})" + r".*\n([\s\S]*?)\n```", """::: {{custom-style="Figure"}}\n```{1}\n{2}\n```\n""" + Alt('图')[1] + ":::")
 def Match(key: str, text: str): return re.search(PATTERN[key][0], text)
+def unescape(text: str): return re.sub(r'\\([^n])', r'\1', text)
 
 
 PATTERN = {
-    'photo': (r"""\n!\[(.*) ?(.*)\]\(([^ \t\r\n]+) ?['"]?(.*)['"]?\)\n""", """\n
+    'photo': (r"""\n!\[(.*) ?(.*)\]\(([^ \t\r\n]+) ?['"]?(.*)['"]?\)\n""", """
 ::: {{custom-style="Figure"}}
 ![图{chapter}-{i} 	 {name}]({url} '图{i} {name} {hint}'){{ width=80% }}
-:::\n
+:::
 """),
-    '图': T(),
-    'table': (r"<!--(.+)-->(\n.*\n\| *[:-].*\n[\s\S]*?\n)\n", """\n
+    'codeFig': CodeFigure(),
+    '图': Alt('图'),
+    'table': (r"<!--(.*?)-->(\n.*\n\| *[:-].*\n[\s\S]*?)\n\n", """\n
 ::: {{custom-style="Figure"}}
 表{chapter}-{i} 	 {0}
 {1}
-:::\n
+:::
 """),
-    '表': T('表'),
+    '表': Alt('表'),
 }
 RULES = {
     'photo': {
@@ -31,10 +33,14 @@ RULES = {
         'url': 2,
         'hint': 3,
     },
+    'codeFig': {
+        'name': 0,
+    },
     '图': {
         'name': 0
     },
 }
+# print(unescape(str(PATTERN)))
 
 
 def sub(filename: str):
@@ -48,6 +54,7 @@ def sub(filename: str):
 
     queue = []
     push(queue, 'photo', Match('photo', text))
+    push(queue, 'codeFig', Match('codeFig', text))
     push(queue, '图', Match('图', text))
     text = _sub_priority(text, queue)
 
@@ -84,14 +91,14 @@ def _sub_priority(text, queue):
         From, To = From_To(match, key, ch, idx, g)
         text = re.sub(From, To, text)
         idx += 1
-        # print(f"☀️替换：{From} => {To}") if key == 'table' else None
+        # print(f"☀️替换：{unescape(From)} -> {To}")
 
         next_match = Match(key, text)
         heapq.heappush(queue, (next_match.start(), key, next_match)) if next_match else None
     return text
 
 
-def From_To(match: re.Match, key, chapter, idx, group: list[str]):
+def From_To(match: re.Match, key, chapter, idx, group: list[str]) -> tuple[str, str]:
     rule = RULES.get(key, {})
     kw = {k: group[v] for k, v in rule.items()}
     From, To = _From_To(match, key, chapter, idx, *group, **kw)
@@ -116,6 +123,7 @@ def main():
     args = parser.parse_args()
 
     Input = sub(args.input)
+    # return
 
     if not args.output:
         args.output = os.path.splitext(args.input)[0] + '.docx'
