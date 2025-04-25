@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+__VERSION__ = 'v0.1.2025.04 from https://github.com/AClon314/md2doc'
 import re
 import os
 import heapq
@@ -9,6 +10,7 @@ def Alt(t='图'): return ("\n" + t + r"\{\} ?(.*)\n", "\n" + t + "{chapter}-{i} 
 def CodeFigure(lang=r'mermaid|plantuml|chartjs'): return (r"<!--(.*?)-->\n```.*" + rf"({lang})" + r".*\n([\s\S]*?)\n```", """::: {{custom-style="Figure"}}\n```{1}\n{2}\n```\n""" + Alt('图')[1] + ":::")
 def Match(key: str, text: str): return re.search(PATTERN[key][0], text)
 def unescape(text: str): return re.sub(r'\\([^n])', r'\1', text)
+def push(queue: list, key: str, match: re.Match | None): heapq.heappush(queue, (match.start(), key, match)) if match else None
 
 
 PATTERN = {
@@ -24,7 +26,7 @@ PATTERN = {
 表{chapter}-{i} 	 {0}
 {1}
 :::
-"""),
+<br>"""),
     '表': Alt('表'),
 }
 RULES = {
@@ -73,10 +75,6 @@ def sub(filename: str):
     return new_file
 
 
-def push(queue: list, key: str, match: re.Match | None):
-    heapq.heappush(queue, (match.start(), key, match)) if match else None
-
-
 def _sub_priority(text, queue):
     idx = 1
     ch_old = 0
@@ -112,17 +110,13 @@ def _From_To(match: re.Match, key, chapter, idx, *args, **kwargs):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Convert markdown to docx")
-    parser.add_argument("input", nargs="?", default="README.md",
-                        help="input.md")
-    parser.add_argument("output", nargs="?", help="output.docx")
-    parser.add_argument("--defaults", default="conf/conf.yaml",
-                        help="https://st1020.com/write-thesis-with-markdown-part1/")
-    parser.add_argument("--diy", action="store_true",
-                        help="pandoc -o diy_template.docx --print-default-data-file reference.docx")
-    args = parser.parse_args()
+    print(__VERSION__)
+    args = argParse()
 
-    Input = sub(args.input)
+    if not args.raw:
+        Input = sub(args.input)
+    else:
+        Input = args.input
     # return
 
     if not args.output:
@@ -131,15 +125,32 @@ def main():
     if args.diy:
         args.output = "conf/diy_template.docx"
         cmd = f"pandoc -o {args.output} --print-default-data-file reference.docx"
-        print("需要另存为.docx一次，才能使用一些高级功能，如：主题")
+        print("💾 需要另存为.docx一次，才能使用一些高级功能，如：主题👔")
     else:
-        cmd = f"pandoc --defaults={args.defaults} --resource-path='{os.path.dirname(args.input)}' '{Input}' -o '{args.output}'"
-        print(cmd)
+        cmd = f"pandoc --defaults={args.yaml} --resource-path='{os.path.dirname(args.input)}' '{Input}' -o '{args.output}'"
+    print(cmd)
     os.system(cmd)
 
     yn = input(f"📂 Open {args.output} [Y/n]: ")
     if yn.lower() in ["", "y"]:
         webbrowser.open(args.output)
+
+
+def argParse():
+    parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter, description="""
+Markdown.md to .docx/.pptx by pandoc & marpit
+💡 Get started: https://st1020.com/write-thesis-with-markdown-part1/
+💡 Set default table style: https://github.com/jgm/pandoc/issues/3275#issuecomment-369198726""")
+    parser.add_argument("input", nargs="?", default="README.md",
+                        help="input.md")
+    parser.add_argument("output", nargs="?", help="output.docx")
+    parser.add_argument("-r", "--raw", action="store_true", help=f"No post process, eg: `图{{}} name` → `图1-1 name` will be NOT applied")
+    parser.add_argument("--yaml", default="conf/conf.yaml", metavar="conf/conf.yaml",
+                        help="Default args in yaml config")
+    parser.add_argument("--diy", action="store_true",
+                        help="generate default pandoc diy_template.docx")
+    args = parser.parse_args()
+    return args
 
 
 if __name__ == "__main__":

@@ -198,16 +198,9 @@ Bob->Alice: Hi Alice
 ```
 
 ```python
-#!/usr/bin/env python
-import os
-
-def main():
-    args = parser.parse_args()
-    cmd = f"pandoc --defaults={args.defaults} {args.input} -o {args.output}"
-    os.system(cmd)
-
+#!/bin/env python
 if __name__ == "__main__":
-    main()
+    print("👻")
 ```
 
 <!-- quote -->
