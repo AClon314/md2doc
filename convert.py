@@ -26,7 +26,7 @@ PATTERN = {
 表{chapter}-{i} 	 {0}
 {1}
 :::
-<br>"""),
+<br>\n\n"""),
     '表': Alt('表'),
 }
 RULES = {
