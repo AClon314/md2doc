@@ -7,3 +7,6 @@
 [submodule "conf/pagebreak"]
 	path = conf/pagebreak
 	url = https://github.com/pandoc-ext/pagebreak.git
+[submodule "conf/pandoc-code-include"]
+	path = conf/pandoc-code-include
+	url = https://github.com/AClon314/pandoc-code-include

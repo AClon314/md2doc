@@ -1,8 +1,9 @@
 filters:
   - conf/pagebreak/pagebreak.lua
   - conf/enstyle-list.lua
-  - chart-filter
-  - pandoc-plantuml
+  - conf/pandoc-code-include/app.py
+  - chart-filter  # https://github.com/nihilor/pandoc-mermaid-chartjs-filter
+  - pandoc-plantuml # https://github.com/timofurrer/pandoc-plantuml-filter
   # - mermaid-filter
 
 toc: true

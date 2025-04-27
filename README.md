@@ -16,7 +16,7 @@ marp: false
 | 学生姓名：aclon&emsp;&emsp;&emsp;&emsp;&emsp;指导教师：大张伟
 :::
 ::: {custom-style="Date"}
-| 2024年
+| 2025年
 :::
 ::: {custom-style="Abstract"}
 | 摘要
@@ -26,13 +26,13 @@ marp: false
 
 ## 安装 Install
 ```sh
+git clone https://github.com/AClon314/md2doc
+
 npm install -g pandoc-mermaid-chartjs-filter
 sudo dnf install giflib-devel # linux依赖：apt install libgif-dev; yay giflib
 
 pip install pandoc-plantuml-filter
 sudo dnf install graphviz plantuml # linux依赖，如果你不想安装plantuml依赖，你可以手动下载.jar包，详见下方
-
-git clone https://github.com/AClon314/md2doc
 ```
 
 ### plantuml.jar
@@ -94,8 +94,6 @@ Write abstract here.
 
 **Bold** _Italic_ ~~Delete~~
 
-\pagebreak
-
 1. 有序列表
     1. 11
         1. 111
@@ -105,7 +103,6 @@ Write abstract here.
     1. 12
 1. 2
 
-\pagebreak
 - 无序列表
   - 11
     - 111
@@ -133,7 +130,8 @@ Write abstract here.
 :::
 
 ::: {custom-style="Figure"}
-![invert](https://api.star-history.com/svg?repos=AClon314/md2doc&type=Date)
+<!-- ![invert](https://api.star-history.com/svg?repos=AClon314/md2doc&type=Date) -->
+
 Figure
 :::
 
@@ -151,9 +149,7 @@ flowchart LR
 
 ```mermaid
 zenuml
-    title Declare participant (optional)
-    Bob
-    Alice
+    title optional
     Alice->Bob: Hi Bob
     Bob->Alice: Hi Alice
 ```
@@ -197,15 +193,16 @@ Bob->Alice: Hi Alice
 }
 ```
 
-```python
+```{.py include=convert.py snippet=main .numberLines}
+```
+
+> quote
+
+```python {.numberLines}
 #!/bin/env python
 if __name__ == "__main__":
     print("👻")
 ```
-
-<!-- quote -->
-> quote
-
 
 \pagebreak
 ::: {custom-style="Abstract"}
