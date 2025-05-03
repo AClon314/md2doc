@@ -1,0 +1,87 @@
+{
+	"Collapse details & summary": {
+		"prefix": "details",
+		"body": [
+			"<details open><summary>",
+			"$1",
+			"</summary>$2",
+			"</details>"
+		],
+	},
+	"Image": {
+		"prefix": "img",
+		"body": [
+			"![${1:alt text}](${2:url} \"${3:title}\")"
+		],
+		"description": "Insert an image with alt text and title"
+	},
+	"Table": {
+		"prefix": "table",
+		"body": [
+			"| ${1:header} | ${2:header} |",
+			"| -- | -- |",
+			"| ${3:row} | ${4:row} |"
+		],
+		"description": "Insert a table with headers and rows"
+	},
+	"Github repo ⭐🎯🕒 FULL status": {
+		"prefix": "github",
+		"body": [
+			"[$1 ![⭐](https://img.shields.io/github/stars/$1?style=flat&label=⭐$4)](https://github.com/$1)$2$5",
+			"[![🕒](https://img.shields.io/github/commit-activity/t/$1/${3:main}?label=🕒$4) ![LAST🕒](https://img.shields.io/github/last-commit/$1/${3:main}?label=🕒$4)](https://github.com/$1/commits)$2",
+			"[![🎯](https://img.shields.io/github/issues/$1?label=⁉️$4) ![🎯close](https://img.shields.io/github/issues-closed/$1?label=❔$4)](https://github.com/$1/issues)",
+		],
+		"description": "star commit issue"
+	},
+	"Github star⭐": {
+		"prefix": "star",
+		"body": [
+			"[$1 ![⭐](https://img.shields.io/github/stars/$1?style=flat)](https://github.com/$1)"
+		]
+	},
+	"Paper Citation": {
+		"prefix": "cite",
+		"body": [
+			"[![cite🙶](https://api.juleskreuer.eu/citation-badge.php?doi=10.${1:1234/1234567.1234567})](https://doi.org/10.${1:1234/1234567.1234567})"
+		],
+		"description": "google scholar from https://doi.org/10.1234/1234567.1234567"
+	},
+	"Figure Pandoc": {
+		"prefix": "figure",
+		"body": [
+			"::: {custom-style=\"Figure\"}",
+			"$2",
+			"",
+			"图{} ${1:name}图",
+			":::",
+			""
+		],
+		"description": "Figure with custom style for pandoc"
+	},
+	"用例Use Case": {
+		"prefix": "usecase",
+		"body": [
+			"<!-- 用例说明：$1 -->",
+			"| | |",
+			"| --- | --- |",
+			"| 用例名称   | $1 |",
+			"| 用例ID     | ${2:A_B_C.1} |",
+			"| 角色       | ${3:用户} |",
+			"| 用例描述   | 该用例主要是实现$4的功能 |",
+			"| 前置条件   | **$5** |",
+			"| 后置条件   | 成功$6 |",
+			"| 基本事件流 | 1. a <br> 2. b <br> |",
+			"| 其他事件流 | 1a. aa <br>         |",
+			"| 异常事件流 | 1a. A <br>          |",
+		],
+	},
+	"测试用例 Test Case": {
+		"prefix": "testcase",
+		"body": [
+			"<!-- $1模块测试表 -->",
+			"|编号|测试用例|测试步骤|预期结果|实际输出|测试结果|",
+			"|-|-|-|-|-|-|",
+			"|1|${1:登录}|${2:输入用户名为空}|${3:提示用户名不能为空}|${4:符合预期}|${5:通过}|",
+		]
+	}
+}

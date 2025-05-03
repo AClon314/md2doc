@@ -1,0 +1,24 @@
+{
+    "recommendations": [
+        // markdown
+        "mathiassoeholm.markdown-link-updater",
+        "bierner.markdown-footnotes", // [^footnote]
+        "kortina.vscode-markdown-notes", // [[wiki-links]]
+        "bierner.markdown-mermaid", // ```mermaid
+        "bpruitt-goddard.mermaid-markdown-syntax-highlighting",
+        "corschenzi.mermaid-graphical-editor",
+        "jebbs.plantuml", // ```plantuml
+        "flomon.chartjs-markdown-preview", // ```chartjs or ```chart
+        "marp-team.marp-vscode", // markdown to ppt
+        "james-yu.latex-workshop", // \latex
+        "orangex4.latex-sympy-calculator", // $1+1=?$
+        // optional tools
+        "tyriar.luna-paint", // photoshop
+        "fausto95.swap",
+        "jmbeach.list-symbols", // code structure
+        "ctc.vscode-tree-extension",
+        // word count
+        "sharzyl.cjk-word-handler",
+        "geezmolycos.vscode-hanzi-counter"
+    ]
+}
