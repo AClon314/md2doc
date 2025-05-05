@@ -1,6 +1,7 @@
 *
 */
 !/conf
+!/conf/*
 !.vscode
 !.vscode/*
 !/*.py

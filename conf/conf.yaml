@@ -1,12 +1,14 @@
 filters:
   - conf/pagebreak/pagebreak.lua
   - conf/enstyle-list.lua
+  - conf/inline_code.lua
   - conf/pandoc-code-include/app.py
   - chart-filter  # https://github.com/nihilor/pandoc-mermaid-chartjs-filter
   - pandoc-plantuml # https://github.com/timofurrer/pandoc-plantuml-filter
   # - mermaid-filter
 
 toc: true
+toc-depth: 4
 # number-sections: true
 # preserve-tabs: true
 reference-doc: conf/ncu.docx

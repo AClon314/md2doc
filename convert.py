@@ -65,20 +65,26 @@ def sub(filename: str):
     push(queue, '图', Match('图', text))
     text = _sub_priority(text, queue)
 
+    match = re.finditer(r"(```.*?mermaid.*?\n)(?!%%)", text)
+    for m in match:
+        _1 = m.group(1)
+        text = re.sub(_1, _1 + r"%%{ init: { 'theme': 'base', 'themeVariables': { 'primaryColor': '#ffffff', 'primaryTextColor': '#000000', 'secondaryTextColor': '#000000', 'tertiaryTextColor': '#000000' } } }%%\n", text)
+        match = re.search(r"(```.*?mermaid.*?\n)", text)
+
     queue = []
     push(queue, 'table', Match('table', text))
     push(queue, '表', Match('表', text))
     text = _sub_priority(text, queue)
 
     # code block num of lines
-    for m in Matches('code', text):
-        From, To = From_To(m, 'code', 0, 0)
-        text = re.sub(From, To, text)
+    # for m in Matches('code', text):
+    #     From, To = From_To(m, 'code', 0, 0)
+    #     text = re.sub(From, To, text)
 
     # pagebreak between chapters
     match = re.findall(r"\n# (.+)\n", text)
     for m in match:
-        text = re.sub(f"\n# {m}\n", r"\n\\pagebreak\n# " + m + '\n', text)
+        text = re.sub(f"\n# {m}\n", r"\n\\pagebreak\n\n# " + m + '\n', text)
 
     new_file = 'doc_' + os.path.splitext(filename)[0] + '.md'
     with open(new_file, 'w', encoding='utf-8') as f:
@@ -137,7 +143,9 @@ def main():
         cmd = f"pandoc --defaults={args.yaml} --resource-path='{os.path.dirname(args.input)}' '{Input}' -o '{args.output}'"
     cmd += ' '.join(unknown)
     print(cmd)
-    os.system(cmd)
+    ret = os.system(cmd)
+    if ret != 0:
+        print("中文字符请用\"...\"包裹")
 
     yn = input(f"📂 Open {args.output} [Y/n]: ")
     if yn.lower() in ["", "y"]:
