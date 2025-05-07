@@ -7,3 +7,5 @@
 !/*.py
 !/ref.bib
 !/README.md
+!/input
+!/input/*

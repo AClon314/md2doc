@@ -10,3 +10,6 @@
 [submodule "conf/pandoc-code-include"]
 	path = conf/pandoc-code-include
 	url = https://github.com/AClon314/pandoc-code-include
+[submodule "input"]
+	path = input
+	url = http://localhost:3000/n/paper-ue_voxel

@@ -14,5 +14,5 @@ toc-depth: 4
 reference-doc: conf/ncu.docx
 
 citeproc: true
-bibliography: ref.bib
+bibliography: input/ref.bib
 csl: conf/china-national-standard-gb-t-7714-2015-numeric.csl
