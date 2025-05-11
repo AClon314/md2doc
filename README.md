@@ -4,25 +4,26 @@ link-bibliography: true
 plantuml-format: svg
 marp: false
 ---
-\pagebreak
-::: {custom-style="Title"}
-| 基于pandoc的markdown转word论文模板
-:::
-::: {custom-style="Subtitle"}
-| 子标题Subtitle
-:::
-::: {custom-style="Author"}
-| 专　业：计算机&emsp;&emsp;&emsp;&emsp;&emsp;学　号：20241015
-| 学生姓名：aclon&emsp;&emsp;&emsp;&emsp;&emsp;指导教师：大张伟
-:::
-::: {custom-style="Date"}
-| 2025年
-:::
-::: {custom-style="Abstract"}
-| 摘要
-:::
 
-~~上面的摘要标题使用了 `custom-style` 而非直接使用 `##` 标题是为了**防止被自动编号**。使用 `{.unnumbered}`/`{-}` 尽管可以实现标题不会被编号，但是下一个标题的编号**仍**然会算上这个标题**继续编号**，所以使用了 `custom-style` 直接指定 Word 样式。~~
+\newpage
+
+# abstract
+
+<div custom-style="Body Text">
+<div custom-style="Title">
+基于pandoc的markdown转word论文模板
+</div><div custom-style="Subtitle">
+子标题Subtitle
+</div><div custom-style="Author">
+专　业：计算机&emsp;&emsp;&emsp;&emsp;&emsp;学　号：20241015  
+学生姓名：aclon&emsp;&emsp;&emsp;&emsp;&emsp;指导教师：大张伟
+</div><div custom-style="Date">
+2025年
+</div><div custom-style="Abstract Title">
+摘要
+</div>
+
+*上面的摘要标题使用了 `custom-style` 而非直接使用 `##` 标题是为了**防止被自动编号**。使用 `{.unnumbered}`/`{-}` 尽管可以实现标题不会被编号，但是下一个标题的编号**仍**然会算上这个标题**继续编号**，所以使用了 `custom-style` 直接指定 Word 样式。*
 
 ## 安装 Install
 ```sh
@@ -62,24 +63,33 @@ chmod +x ~/.local/bin/plantuml
 [@ref_standard]
 [@md2pptx]
 
-::: {custom-style="Normal"}
-| **关键词：** Markdown；Pandoc
-:::
-\pagebreak
+## 必读文档 Must Read
 
-::: {custom-style="Title"}
-| Based on pandoc word template
-:::
-::: {custom-style="Abstract"}
-| Abstract
-:::
+[default table style 默认表格样式，✅MS-Word，❌WPS](https://github.com/jgm/pandoc/issues/3275#issuecomment-369198726)
+
+[markdown转markdown：\$toc\$自定义目录位置](https://github.com/jgm/pandoc/wiki/Pandoc-Tricks#using-markdown-templates)
+
+[用markdown写论文@geChunYu](https://ge-chunyu.github.io/posts/2019-11-pandoc-large-document/)
+
+[用markdown写论文@st1020](https://st1020.com/write-thesis-with-markdown-part1/)
+
+**关键词：** Markdown；Pandoc
+
+\newpage
+
+<div custom-style="Title">
+Based on pandoc word template
+</div><div custom-style="Abstract Title">
+Abstract
+</div>
 
 Write abstract here.
 
-::: {custom-style="Normal"}
-| **Key Words:** Markdown; Pandoc
-:::
-\pagebreak
+**Key Words:** Markdown; Pandoc
+
+</div>
+
+\newpage
 
 # Heading 1
 ## Heading 2
@@ -204,7 +214,7 @@ if __name__ == "__main__":
     print("👻")
 ```
 
-\pagebreak
+\newpage
 ::: {custom-style="Abstract"}
 | 参考文献
 :::

@@ -3,6 +3,7 @@ filters:
   - conf/enstyle-list.lua
   - conf/inline_code.lua
   - conf/pandoc-code-include/app.py
+  - conf/abstract-section/abstract-section.lua  # https://github.com/pandoc-ext/abstract-section
   - chart-filter  # https://github.com/nihilor/pandoc-mermaid-chartjs-filter
   - pandoc-plantuml # https://github.com/timofurrer/pandoc-plantuml-filter
   # - mermaid-filter
