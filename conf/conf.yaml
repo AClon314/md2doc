@@ -1,5 +1,6 @@
 filters:
   - conf/pagebreak/pagebreak.lua
+  - conf/pandoc-sectionBreak/app.py
   - conf/enstyle-list.lua
   - conf/inline_code.lua
   - conf/pandoc-code-include/app.py

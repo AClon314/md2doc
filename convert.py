@@ -13,6 +13,15 @@ def unescape(text: str): return re.sub(r'\\([^n])', r'\1', text)
 def push(queue: list, key: str, match: re.Match | None): heapq.heappush(queue, (match.start(), key, match)) if match else None
 
 
+def unzip(zip: str):
+    from zipfile import ZipFile
+    To = os.path.splitext(zip)[0]
+    with ZipFile(zip, 'r') as zipObj:
+        # Extract all the contents of zip file in current directory
+        zipObj.extractall(To)
+    print(f"📚 Unzip {zip} to {To} 📂")
+
+
 PATTERN = {
     'photo': (r"""\n!\[(.*) ?(.*)\]\(([^ \t\r\n]+) ?['"]?(.*)['"]?\)\n""", """
 ::: {{custom-style="Figure"}}
@@ -142,14 +151,20 @@ def main():
     else:
         cmd = f"pandoc --defaults={args.yaml} --resource-path='{os.path.dirname(args.input)}' '{Input}' -o '{args.output}'"
     cmd += ' '.join(unknown)
-    print(cmd)
+    print(cmd) if cmd else None
     ret = os.system(cmd)
     if ret != 0:
-        print("中文字符请用\"...\"包裹")
+        print("提示：plantuml内的中文字符请用\"...\"包裹")
+        exit(1)
 
-    yn = input(f"📂 Open {args.output} [Y/n]: ")
-    if yn.lower() in ["", "y"]:
-        webbrowser.open(args.output)
+    if args.debug:
+        unzip(args.output)
+        os.remove(args.output)
+        print(f"See {os.path.join(os.path.splitext(args.output)[0], 'word', 'document.xml')}")
+    else:
+        yn = input(f"📂 Open {args.output} [Y/n]: ")
+        if yn.lower() in ["", "y"]:
+            webbrowser.open(args.output)
 
 
 def argParse():
@@ -161,6 +176,7 @@ Markdown.md to .docx/.pptx by pandoc & marpit
                         help="input.md")
     parser.add_argument("output", nargs="?", help="output.docx")
     parser.add_argument("-r", "--raw", action="store_true", help=f"No post process, eg: `图{{}} name` → `图1-1 name` will be NOT applied")
+    parser.add_argument("-D", "--debug", action="store_true", help=f"No output file. Add `DEBUG=1` to show more msg.")
     parser.add_argument("--yaml", default="conf/conf.yaml", metavar="conf/conf.yaml",
                         help="Default args in yaml config")
     parser.add_argument("--diy", action="store_true",

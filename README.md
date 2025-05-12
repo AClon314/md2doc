@@ -2,10 +2,9 @@
 link-citations: true
 link-bibliography: true
 plantuml-format: svg
+template: conf/ncu.docx
 marp: false
 ---
-
-\newpage
 
 # abstract
 
@@ -89,7 +88,7 @@ Write abstract here.
 
 </div>
 
-\newpage
+<br section>
 
 # Heading 1
 ## Heading 2
