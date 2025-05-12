@@ -6,6 +6,8 @@ import os
 import heapq
 import argparse
 import webbrowser
+DEBUG = os.environ.get("DEBUG", None)
+PATH_DIY = os.path.join('conf', 'diy_template')
 def Alt(t='图'): return ("\n" + t + r"\{\} ?(.*)\n", "\n" + t + "{chapter}-{i} {name}\n")
 def Match(key: str, text: str): return re.search(PATTERN[key][0], text)
 def Matches(key: str, text: str): return re.finditer(PATTERN[key][0], text)
@@ -135,36 +137,66 @@ def main():
     print(__VERSION__)
     args, unknown = argParse()
 
-    if not args.raw:
-        Input = sub(args.input)
+    if (args.output and '.doc' in args.output) or '.md' in args.input:
+        output = docx(**vars(args), args=unknown)
+    elif (args.output and '.md' in args.output) or '.doc' in args.input:
+        output = markdown(**vars(args), args=unknown)
     else:
-        Input = args.input
-    # return
+        print("🤔 请指明输出文件类型 Please specify the output file type")
+        return
+    yn = input(f"📂 Open {output} [Y/n]: ")
+    if yn.lower() in ["", "y"]:
+        webbrowser.open(output)
 
-    if not args.output:
-        args.output = os.path.splitext(args.input)[0] + '.docx'
 
-    if args.diy:
-        args.output = "conf/diy_template.docx"
-        cmd = f"pandoc -o {args.output} --print-default-data-file reference.docx"
+def docx(input: str, output: str, yaml: str, diy=False, raw=False, args=[], **kwargs):
+    EXT = '.docx'
+    if raw:
+        Input = input
+    else:
+        Input = sub(input)
+
+    if not output:
+        output = os.path.splitext(input)[0] + EXT
+
+    if diy:
+        output = f"{PATH_DIY}.docx"
+        cmd = f"pandoc -o {output} --print-default-data-file reference.docx"
         print("💾 需要另存为.docx一次，才能使用一些高级功能，如：主题👔")
+
     else:
-        cmd = f"pandoc --defaults={args.yaml} --resource-path='{os.path.dirname(args.input)}' '{Input}' -o '{args.output}'"
-    cmd += ' '.join(unknown)
+        cmd = f"pandoc --defaults={yaml} --resource-path='{os.path.dirname(input)}' '{Input}' -o '{output}'"
+    cmd += ' '.join(args)
     print(cmd) if cmd else None
     ret = os.system(cmd)
     if ret != 0:
         print("提示：plantuml内的中文字符请用\"...\"包裹")
         exit(1)
 
-    if args.debug:
-        unzip(args.output)
-        os.remove(args.output)
-        print(f"See {os.path.join(os.path.splitext(args.output)[0], 'word', 'document.xml')}")
+    if DEBUG:
+        unzip(output)
+        print(f"See {os.path.join(os.path.splitext(output)[0], 'word', 'document.xml')}")
+    return output
+
+
+def markdown(input: str, output: str, yaml: str, diy=False, args=[], **kwargs):
+    EXT = '.md'
+    if not output:
+        output = os.path.splitext(input)[0] + EXT
+
+    if diy:
+        output = f"{PATH_DIY}.md"
+        cmd = f"pandoc -o {output} --print-default-data-file reference.docx"
+
     else:
-        yn = input(f"📂 Open {args.output} [Y/n]: ")
-        if yn.lower() in ["", "y"]:
-            webbrowser.open(args.output)
+        _defaults = f'--defaults={yaml}' if yaml else ''
+        cmd = f"pandoc {_defaults} '{input}' -o '{output}'"
+    cmd += ' '.join(args)
+    print(cmd) if cmd else None
+    ret = os.system(cmd)
+    if ret != 0:
+        exit(1)
+    return output
 
 
 def argParse():
@@ -172,9 +204,11 @@ def argParse():
 Markdown.md to .docx/.pptx by pandoc & marpit
 💡 Get started: https://st1020.com/write-thesis-with-markdown-part1/
 💡 Set default table style: https://github.com/jgm/pandoc/issues/3275#issuecomment-369198726""")
-    parser.add_argument("input", nargs="?", default="README.md",
-                        help="input.md")
+    parser.add_argument("input", nargs="?", default="README.md", help="input.md")
+    parser.add_argument("-i", "--input", nargs="?", default="README.md", help="input.md")
     parser.add_argument("output", nargs="?", help="output.docx")
+    parser.add_argument("-o", "--output", nargs="?", help="output.docx")
+
     parser.add_argument("-r", "--raw", action="store_true", help=f"No post process, eg: `图{{}} name` → `图1-1 name` will be NOT applied")
     parser.add_argument("-D", "--debug", action="store_true", help=f"No output file. Add `DEBUG=1` to show more msg.")
     parser.add_argument("--yaml", default="conf/conf.yaml", metavar="conf/conf.yaml",
