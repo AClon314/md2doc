@@ -85,6 +85,14 @@ def sub(filename: str):
         _1 = match.group(1)
         text = re.sub(_1, _1 + r"%%{ init: { 'theme': 'base', 'themeVariables': { 'primaryColor': '#ffffff', 'primaryTextColor': '#000000', 'secondaryTextColor': '#000000', 'tertiaryTextColor': '#000000' } } }%%\n", text)
 
+    match = True
+    while match:
+        match = re.search(r"(```.*?plantuml.*?\n@startuml\n)(?!!theme)", text)
+        if not match:
+            break
+        _1 = match.group(1)
+        text = re.sub(_1, _1 + '!theme plain\n', text)
+
     queue = []
     push(queue, 'table', Match('table', text))
     push(queue, '表', Match('表', text))
