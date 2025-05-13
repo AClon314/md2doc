@@ -77,11 +77,13 @@ def sub(filename: str):
     push(queue, '图', Match('图', text))
     text = _sub_priority(text, queue)
 
-    match = re.finditer(r"(```.*?mermaid.*?\n)(?!%%)", text)
-    for m in match:
-        _1 = m.group(1)
+    match = True
+    while match:
+        match = re.search(r"(```.*?mermaid.*?\n)(?!%%)", text)
+        if not match:
+            break
+        _1 = match.group(1)
         text = re.sub(_1, _1 + r"%%{ init: { 'theme': 'base', 'themeVariables': { 'primaryColor': '#ffffff', 'primaryTextColor': '#000000', 'secondaryTextColor': '#000000', 'tertiaryTextColor': '#000000' } } }%%\n", text)
-        match = re.search(r"(```.*?mermaid.*?\n)", text)
 
     queue = []
     push(queue, 'table', Match('table', text))
