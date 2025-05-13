@@ -13,6 +13,7 @@ def Match(key: str, text: str): return re.search(PATTERN[key][0], text)
 def Matches(key: str, text: str): return re.finditer(PATTERN[key][0], text)
 def unescape(text: str): return re.sub(r'\\([^n])', r'\1', text)
 def push(queue: list, key: str, match: re.Match | None): heapq.heappush(queue, (match.start(), key, match)) if match else None
+def dir_filename(path: str): return os.path.dirname(path), os.path.basename(path)
 
 
 def unzip(zip: str):
@@ -97,7 +98,8 @@ def sub(filename: str):
     for m in match:
         text = re.sub(f"\n# {m}\n", r"\n\\pagebreak\n\n# " + m + '\n', text)
 
-    new_file = 'doc_' + os.path.splitext(filename)[0] + '.md'
+    Dir, file = dir_filename(filename)
+    new_file = os.path.join(Dir, 'doc_' + os.path.splitext(file)[0] + '.md')
     with open(new_file, 'w', encoding='utf-8') as f:
         f.write(text)
     return new_file

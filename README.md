@@ -121,9 +121,9 @@ Write abstract here.
   - 12
 - 2
 
-|   a   |   b   |
-| :---: | :---: |
-|   1   |   2   |
+| Compact |   b   |
+| :-----: | :---: |
+|    1    |   2   |
 : simple_tables see https://pandoc.org/chunkedhtml-demo/8.9-tables.html
 
 <!-- description -->
