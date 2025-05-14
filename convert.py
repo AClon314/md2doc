@@ -71,11 +71,12 @@ def sub(filename: str):
         text = f.read()
 
     # TODO: use generator
+    is_abstract = re.search(r'\n# *[Aa]bstract *\n', text)
     queue = []
     push(queue, 'photo', Match('photo', text))
     push(queue, 'codeFig', Match('codeFig', text))
     push(queue, '图', Match('图', text))
-    text = _sub_priority(text, queue)
+    text = _sub_priority(text, queue, ch_offset=-1 if is_abstract else 0)
 
     match = True
     while match:
@@ -91,7 +92,7 @@ def sub(filename: str):
         if not match:
             break
         _1 = match.group(1)
-        text = re.sub(_1, _1 + '!theme plain\n', text)
+        text = re.sub(_1, _1 + '!theme plain\nskinparam defaultFontName "Noto Sans CJK SC"\n', text)
 
     queue = []
     push(queue, 'table', Match('table', text))
@@ -115,12 +116,12 @@ def sub(filename: str):
     return new_file
 
 
-def _sub_priority(text, queue, Print=False):
+def _sub_priority(text, queue, Print=False, ch_offset=0):
     idx = 1
     ch_old = 0
     while queue:
         _, key, match = heapq.heappop(queue)
-        ch = len(re.findall(r'\n# [一-龟\w]+\n', text[:match.start()]))
+        ch = len(re.findall(r'\n# [一-龟\w]+\n', text[:match.start()])) + ch_offset
         if ch != ch_old:
             idx = 1
             ch_old = ch
@@ -149,9 +150,9 @@ def main():
     print(__VERSION__)
     args, unknown = argParse()
 
-    if (args.output and '.doc' in args.output) or '.md' in args.input:
+    if (args.output and '.doc' in args.output) or any(fmt in args.input for fmt in ['.md', '.tex']):
         output = docx(**vars(args), args=unknown)
-    elif (args.output and '.md' in args.output) or '.doc' in args.input:
+    elif (args.output and '.md' in args.output) or any(fmt in args.input for fmt in ['.doc', '.htm']):
         output = markdown(**vars(args), args=unknown)
     else:
         print("🤔 请指明输出文件类型 Please specify the output file type")
@@ -202,7 +203,12 @@ def markdown(input: str, output: str, yaml: str, diy=False, args=[], **kwargs):
 
     else:
         _defaults = f'--defaults={yaml}' if yaml else ''
-        cmd = f"pandoc {_defaults} '{input}' -o '{output}'"
+        _input_dir = os.path.dirname(input)
+        _resource_path = os.path.join(_input_dir, os.path.splitext(os.path.basename(input))[0])
+        if not os.path.exists(_resource_path):
+            _resource_path = _input_dir
+        _resource_path = f"--resource-path='{_resource_path}'" if _resource_path else ''
+        cmd = f"pandoc {_defaults} {_resource_path} '{input}' -o '{output}'"
     cmd += ' '.join(args)
     print(cmd) if cmd else None
     ret = os.system(cmd)

@@ -32,22 +32,28 @@ npm install -g pandoc-mermaid-chartjs-filter
 sudo dnf install giflib-devel # linux依赖：apt install libgif-dev; yay giflib
 
 pip install pandoc-plantuml-filter
-sudo dnf install graphviz plantuml # linux依赖，如果你不想安装plantuml依赖，你可以手动下载.jar包，详见下方
+sudo dnf install graphviz # 还需要手动安装plantuml，见下方
 ```
 
-### plantuml.jar
-linux系统，windows用户也是类似的。
+### plantuml
 
-1. 保证`java`与`graphviz`已安装：`java --version`
-2. 手动下载~~最新的~~`plantuml.jar`: https://sourceforge.net/projects/plantuml/files/plantuml.jar/download
-3. 在任意属于`$PATH`的路径下创建`plantuml`文件，没有后缀名：
-```sh
-#!/bin/bash
-java -jar $HOME/plantuml.jar "$@"
+1. 下载最新包，解压：[windows](https://github.com/plantuml/plantuml/releases/latest)
+2. 为`plantuml`(full)或`plantuml-headless`创建软链接到$PATH，windows下可以是`C:\Windows`，linux下可以是`~/.local/bin`(需要在.bashrc里添加PATH=...:$PATH)
+3. 测试
 ```
-4. 设置执行权限
-```sh
-chmod +x ~/.local/bin/plantuml
+plantuml -version
+PlantUML version 1.2025.2 (Wed Jan 08 01:35:36 CST 2025)
+(GPLv2 source distribution)
+Java Runtime: GraalVM Runtime Environment
+JVM: Substrate VM
+Default Encoding: UTF-8
+Language: null
+Country: null
+ 
+PLANTUML_LIMIT_SIZE: 4096
+
+Dot version: dot - graphviz version 12.2.1 (20241206.2353)
+Installation seems OK. File generation OK
 ```
 
 ## 用法 Usage
@@ -214,8 +220,8 @@ if __name__ == "__main__":
 ```
 
 \newpage
-::: {custom-style="Abstract"}
-| 参考文献
-:::
+
+# 参考文献
+
 ::: {#refs}
 :::
