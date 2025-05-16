@@ -5,6 +5,8 @@ filters:
   - conf/inline_code.lua
   - conf/pandoc-code-include/app.py
   - conf/abstract-section/abstract-section.lua  # https://github.com/pandoc-ext/abstract-section
+  # - pandoc-numbering  # 图+.#fig:ID\n then [@fig:ID]
+  - pandoc-crossref # ![图注]{#fig:ID} then [@fig:ID]
   - chart-filter  # https://github.com/nihilor/pandoc-mermaid-chartjs-filter
   - pandoc-plantuml # https://github.com/timofurrer/pandoc-plantuml-filter
   # - mermaid-filter
@@ -14,6 +16,7 @@ toc-depth: 4
 # number-sections: true
 # preserve-tabs: true
 reference-doc: conf/ncu.docx
+table-caption-position: above
 
 citeproc: true
 bibliography: input/ref.bib

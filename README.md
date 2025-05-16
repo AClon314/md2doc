@@ -2,6 +2,16 @@
 link-citations: true
 link-bibliography: true
 plantuml-format: svg
+# crossref
+chapters: true
+chaptersDepth: 1
+figureTitle: "图"
+tableTitle: "表"
+titleDelim: " "
+chapDelim: "-"
+figPrefix: [""]
+tblPrefix: [""]
+# sectionBreak
 template: conf/ncu.docx
 marp: false
 ---
@@ -28,12 +38,15 @@ marp: false
 ```sh
 git clone https://github.com/AClon314/md2doc
 
+wget https://github.com/lierdakil/pandoc-crossref/releases/latest/download/pandoc-crossref-Linux-X64.tar.xz # 自动编号，下载后解压到PATH
 npm install -g puppeteer pandoc-mermaid-chartjs-filter
 # pnpm approve-builds -g
 sudo dnf install giflib-devel # linux依赖：apt install libgif-dev; yay giflib
 
 pip install pandoc-plantuml-filter
 sudo dnf install graphviz # 还需要手动安装plantuml，见下方
+
+# pip install pandoc-tex-numbering  # tex → other
 ```
 
 ### plantuml
@@ -145,11 +158,9 @@ Write abstract here.
 表{} 表名
 :::
 
-::: {custom-style="Figure"}
-<!-- ![invert](https://api.star-history.com/svg?repos=AClon314/md2doc&type=Date) -->
+如图[@fig:ID]。
 
-Figure
-:::
+![invert](https://api.star-history.com/svg?repos=AClon314/md2doc&type=Date){#fig:ID}
 
 <!-- description -->
 ```mermaid
