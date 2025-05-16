@@ -28,7 +28,8 @@ marp: false
 ```sh
 git clone https://github.com/AClon314/md2doc
 
-npm install -g pandoc-mermaid-chartjs-filter
+npm install -g puppeteer pandoc-mermaid-chartjs-filter
+# pnpm approve-builds -g
 sudo dnf install giflib-devel # linux依赖：apt install libgif-dev; yay giflib
 
 pip install pandoc-plantuml-filter
@@ -38,7 +39,7 @@ sudo dnf install graphviz # 还需要手动安装plantuml，见下方
 ### plantuml
 
 1. 下载最新包，解压：[windows](https://github.com/plantuml/plantuml/releases/latest)
-2. 为`plantuml`(full)或`plantuml-headless`创建软链接到$PATH，windows下可以是`C:\Windows`，linux下可以是`~/.local/bin`(需要在.bashrc里添加PATH=...:$PATH)
+2. 为`plantuml`(full)或`plantuml-headless`创建软链接到\$PATH，windows下可以是`C:\Windows`，linux下可以是`~/.local/bin`(需要在.bashrc里添加PATH=...:\$PATH)
 3. 测试
 ```
 plantuml -version
