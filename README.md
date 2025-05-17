@@ -13,6 +13,8 @@ figPrefix: [""]
 tblPrefix: [""]
 # sectionBreak
 template: conf/ncu.docx
+# figure-caption-patch
+autoFigLabels: true
 marp: false
 ---
 
@@ -141,15 +143,12 @@ Write abstract here.
   - 12
 - 2
 
+如表[@tbl:table]。如图[@fig:ID]。
+
 | Compact |   b   |
 | :-----: | :---: |
 |    1    |   2   |
-: simple_tables see https://pandoc.org/chunkedhtml-demo/8.9-tables.html
-
-<!-- description -->
-|   a   |   b   |
-| :---: | :---: |
-|   1   |   2   |
+: simple_tables see https://pandoc.org/chunkedhtml-demo/8.9-tables.html {#tbl:table}
 
 ::: {custom-style="Figure"}
 |   a   |   b   |
@@ -158,9 +157,7 @@ Write abstract here.
 表{} 表名
 :::
 
-如图[@fig:ID]。
-
-![invert](https://api.star-history.com/svg?repos=AClon314/md2doc&type=Date){#fig:ID}
+![invert](https://images7.memedroid.com/images/UPLOADED819/64a1d3e2c44ae.jpeg){#fig:ID}
 
 <!-- description -->
 ```mermaid

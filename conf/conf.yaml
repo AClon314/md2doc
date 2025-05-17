@@ -5,11 +5,10 @@ filters:
   - conf/inline_code.lua
   - conf/pandoc-code-include/app.py
   - conf/abstract-section/abstract-section.lua  # https://github.com/pandoc-ext/abstract-section
-  # - pandoc-numbering  # 图+.#fig:ID\n then [@fig:ID]
-  - pandoc-crossref # ![图注]{#fig:ID} then [@fig:ID]
   - chart-filter  # https://github.com/nihilor/pandoc-mermaid-chartjs-filter
   - pandoc-plantuml # https://github.com/timofurrer/pandoc-plantuml-filter
-  # - mermaid-filter
+  - conf/pandoc-figure-caption-patch/app.py
+  - pandoc-crossref # ![图注]{#fig:ID} then [@fig:ID]
 
 toc: true
 toc-depth: 4
@@ -18,6 +17,6 @@ toc-depth: 4
 reference-doc: conf/ncu.docx
 table-caption-position: above
 
-citeproc: true
+# citeproc: true
 bibliography: input/ref.bib
 csl: conf/china-national-standard-gb-t-7714-2015-numeric.csl

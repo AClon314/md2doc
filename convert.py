@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 __VERSION__ = 'v0.2.2025.05 from https://github.com/AClon314/md2doc'
-from collections import UserDict
 import re
 import os
 import json
@@ -13,7 +12,8 @@ import argparse
 import webbrowser
 import asyncio as aio
 from rich import progress
-from typing import Callable, Any, Literal, ParamSpec, TypeVar, cast
+from collections import UserDict
+from typing import Callable, Any, Iterable, Literal, ParamSpec, TypeVar, cast
 from platformdirs import user_cache_path
 _APPPATH_ = user_cache_path('pandoc')
 _JS_PATH_ = os.path.join(_APPPATH_, 'pandoc.json')
@@ -56,7 +56,7 @@ def unzip(zip: str):
     Log.info(f"📚 Unzip {zip} to {To} 📂")
 
 
-PATTERN = {
+_PATTERN = {
     'photo': [r"""\n!\[(.*) ?(.*)\]\(([^ \t\r\n]+) ?['"]?(.*)['"]?\)\n""", """
 ::: {{custom-style="Figure"}}
 ![图{chapter}-{i} 	 {name}]({url} '图{i} {name} {hint}'){{ width=80% }}
@@ -72,7 +72,8 @@ PATTERN = {
 :::
 <br>\n\n"""],
     '表': Alt('表'),
-    'csl': [r"\n.*\.csl-entry.*\n(.*)\n\n", f""]
+    'cite': [r':::::::::::::: \{#refs [^\t]*\n::::::::::::::', ""],
+    'csl': [r"\[\\\[(\d+)\\\] \]\{\.csl-left-margin\}", r"\1"]
 }
 RULES = {
     'photo': {
@@ -90,7 +91,13 @@ RULES = {
         'name': 0
     }
 }
-PATTERN = {k: [re.compile(v[0]), v[1]] for k, v in PATTERN.items()}
+PATTERN: dict[str, tuple[re.Pattern, str]] = {k: (re.compile(v[0]), v[1]) for k, v in _PATTERN.items()}
+
+
+def same_fullpath(fullpath: str, rename='.pre_{}.md'):
+    Dir, file = dir_filename(fullpath)
+    filepath = os.path.join(Dir, rename.format(no_ext(file)))
+    return filepath
 
 
 async def popen(
@@ -158,7 +165,7 @@ async def popen(
         if Raise:
             raise ChildProcessError(f"{cmd}")
         else:
-            log(f'{p.exitstatus} from "{cmd}" → {p.before}')
+            log(f'{p.exitstatus} from "{cmd}" → {p.before.decode()}')
     return p
 
 
@@ -172,13 +179,13 @@ async def pre_process(filename: str, yaml: str | None = None):
     with open(filename, 'r', encoding='utf-8') as f:
         text = f.read()
 
-    # TODO: use generator
-    is_abstract = re.search(r'\n# *[Aa]bstract *\n', text)
-    queue = []
-    push(queue, 'photo', Match('photo', text))
-    push(queue, 'codeFig', Match('codeFig', text))
-    push(queue, '图', Match('图', text))
-    text = _sub_priority(text, queue, ch_offset=-1 if is_abstract else 0)   # TODO
+    # TODO: use `pandoc-crossref`
+    # is_abstract = re.search(r'\n# *[Aa]bstract *\n', text)
+    # queue = []
+    # push(queue, 'photo', Match('photo', text))
+    # push(queue, 'codeFig', Match('codeFig', text))
+    # push(queue, '图', Match('图', text))
+    # text = _sub_priority(text, queue, ch_offset=-1 if is_abstract else 0)
 
     match = True
     while match:
@@ -196,10 +203,11 @@ async def pre_process(filename: str, yaml: str | None = None):
         _1 = match.group(1)
         text = re.sub(_1, _1 + '!theme plain\nskinparam defaultFontName "Noto Sans CJK SC"\n', text)
 
-    queue = []
-    push(queue, 'table', Match('table', text))
-    push(queue, '表', Match('表', text))
-    text = _sub_priority(text, queue)
+    # TODO: use `pandoc-crossref`
+    # queue = []
+    # push(queue, 'table', Match('table', text))
+    # push(queue, '表', Match('表', text))
+    # text = _sub_priority(text, queue)
 
     # # code block num of lines
     # for m in Matches('code', text):
@@ -212,9 +220,9 @@ async def pre_process(filename: str, yaml: str | None = None):
         text = re.sub(rf"\n# {m}\n", r"\n\\pagebreak\n\n# " + m + '\n', text)
 
     pre_md = same_fullpath(filename)
-    if yaml:
-        text = await set_cite(filename, yaml, pre_md)
-    exit(1)
+    # if yaml:
+    #     cite = await expand_cite(filename, yaml, pre_md)
+    #     text = re.sub(r'\n::: *\{ *#refs[^\t]*\n:::\n', f'\n{cite}\n', text)
 
     with open(pre_md, 'w', encoding='utf-8') as f:
         f.write(text)
@@ -222,25 +230,29 @@ async def pre_process(filename: str, yaml: str | None = None):
     return pre_md
 
 
-def same_fullpath(fullpath: str, rename='.pre_{}.md'):
-    Dir, file = dir_filename(fullpath)
-    filepath = os.path.join(Dir, rename.format(no_ext(file)))
-    return filepath
-
-
-async def set_cite(input: str, yaml: str, output: str | None = None):
+async def expand_cite(input: str, yaml: str, output: str | None = None):
     from yaml import safe_load
     if not output:
         output = same_fullpath(input)
     with open(yaml, 'r', encoding='utf-8') as f:
         conf = safe_load(f)
     cite_keys = ['bibliography', 'csl']
-    cite = {k: conf[k] for k in cite_keys if k in conf.keys()}
-    output = await pandoc(input=input, output=output, args=['--citeproc'], **cite)
+    cite_args = {k: conf[k] for k in cite_keys if k in conf.keys()}
+    output = await pandoc(input=input, output=output, **cite_args)
     with open(output, 'r', encoding='utf-8') as f:
         text = f.read()
 
-    return text
+    # with open(input, 'w', encoding='utf-8') as f:
+    #     f.write(text)
+    # exit(1)
+
+    text = PATTERN['cite'][0].findall(text)
+    if text:
+        text = text[0]
+        cite = PATTERN['csl'][0].sub(_PATTERN['csl'][1] + '. ', text)
+    else:
+        cite = ''
+    return cite
 
 
 def _sub_priority(text, queue, ch_offset=0):
@@ -302,8 +314,16 @@ async def pandoc(input: str, output: str, yaml: str | None = None, diy=False, ar
             _res_path = Dir
 
         _res_path = f"--resource-path='{_res_path}'" if _res_path else ''
-        cmd = f"pandoc {_defaults} {_res_path} '{input}' -o '{output}' "
-    cmd += ' '.join(args + [f'--{k}={v}' for k, v in kwargs.items()])
+        cmd = f"pandoc {_defaults} --citeproc {_res_path} '{input}' -o '{output}' "
+    for k, v in kwargs.items():
+        if k and v:
+            if isinstance(v, Iterable) and not isinstance(v, str):
+                _s = f'--{k}='
+                _s += f' --{k}='.join(v)
+            else:
+                _s = f'--{k}={v}'
+            args.append(_s)
+    cmd += ' '.join(args)
     p = await popen(cmd)
     return output
 
@@ -381,6 +401,7 @@ async def wrap_pg(coro, Input):
             else:  # 如果是 update_timer 完成
                 PG.update(tid, description=f"{describe} waiting pandoc")
                 PG.stop_task(tid)
+                PG.update(tid, completed=0)
     else:
         tid = PG.add_task(describe, total=None)
         res = await coro

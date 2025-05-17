@@ -19,3 +19,6 @@
 [submodule "conf/abstract-section"]
 	path = conf/abstract-section
 	url = https://github.com/pandoc-ext/abstract-section
+[submodule "conf/pandoc-figure-caption-patch"]
+	path = conf/pandoc-figure-caption-patch
+	url = https://github.com/AClon314/pandoc-figure-caption-patch
