@@ -2,7 +2,7 @@
 link-citations: true
 link-bibliography: true
 plantuml-format: svg
-# crossref
+## crossref
 chapters: true
 chaptersDepth: 1
 figureTitle: "图"
@@ -11,12 +11,50 @@ titleDelim: " "
 chapDelim: "-"
 figPrefix: [""]
 tblPrefix: [""]
-# sectionBreak
+## sectionBreak
 template: conf/ncu.docx
-# figure-caption-patch
+## figure-caption-patch
 autoFigLabels: true
-marp: false
+## marp
+marp: true
+# theme: uncover
+footer: '2025-05-23'
+paginate: true
 ---
+<style>
+._ img {
+    width: 50vw;
+}
+* {
+    /* width: fit-content; */
+}
+.flex{
+    display:flex;
+}
+._ {
+    display:flex;
+    flex-direction: row;
+}
+.I {
+    display:flex;
+    flex-direction: column;
+}
+section{
+    padding: 1.5em;
+}
+figcaption{
+    font-size: 20px;
+    text-align: center;
+}
+/* span.hljs-function{
+    display:grid;
+} */
+</style>
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ startOnLoad: true });
+</script>
+<!-- header: "header" -->
 
 # abstract
 

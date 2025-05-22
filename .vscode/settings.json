@@ -6,4 +6,7 @@
             "strings": "off"
         },
     },
+    "markdown.marp.exportType": "pptx",
+    "markdown.marp.html": "all",
+    "markdown.marp.pptx.editable": "on",
 }
