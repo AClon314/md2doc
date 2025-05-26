@@ -193,21 +193,9 @@ async def pre_process(filename: str, yaml: str | None = None):
         if not match:
             break
         _1 = match.group(1)
-        text = re.sub(_1, _1 + r"%%{ init: { 'theme': 'base', 'themeVariables': { 'primaryColor': '#ffffff', 'primaryTextColor': '#000000', 'secondaryTextColor': '#000000', 'tertiaryTextColor': '#000000' } } }%%\n", text)
-
-    match = True
-    while match:
-        match = re.search(r"(```.*?plantuml.*?\n@startuml\n)(?!!theme)", text)
-        if not match:
-            break
-        _1 = match.group(1)
-        text = re.sub(_1, _1 + '!theme plain\nskinparam defaultFontName "Noto Sans CJK SC"\n', text)
-
-    # TODO: use `pandoc-crossref`
-    # queue = []
-    # push(queue, 'table', Match('table', text))
-    # push(queue, '表', Match('表', text))
-    # text = _sub_priority(text, queue)
+        # https://mermaid.js.org/config/theming.html#theme-variables
+        # plantuml -printfonts
+        text = re.sub(_1, _1 + r"%%{init:{'fontFamily':'SimSun','flowchart':{'padding':0, 'htmlLabels':false}, 'htmlLabels':false, 'theme':'base', 'themeVariables':{'primaryColor':'#fff','clusterBkg':'#fff','edgeLabelBackground':'#fff','lineColor':'#000','primaryTextColor':'#000','primaryBorderColor':'#000','secondaryTextColor':'#000', 'clusterBorder':'#888','tertiaryTextColor':'#000'} }}%%\n", text)
 
     # # code block num of lines
     # for m in Matches('code', text):

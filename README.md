@@ -2,6 +2,8 @@
 link-citations: true
 link-bibliography: true
 plantuml-format: svg
+## plot
+plot-configuration: conf/plot.yaml
 ## crossref
 chapters: true
 chaptersDepth: 1
@@ -16,17 +18,18 @@ template: conf/ncu.docx
 ## figure-caption-patch
 autoFigLabels: true
 ## marp
-marp: true
+marp: false
 # theme: uncover
 footer: '2025-05-23'
 paginate: true
 ---
 <style>
-._ img {
-    width: 50vw;
+<style>
+._ .I img {
+    width: 150vw;
 }
-* {
-    /* width: fit-content; */
+.fit {
+    width: fit-content;
 }
 .flex{
     display:flex;
@@ -49,11 +52,11 @@ figcaption{
 /* span.hljs-function{
     display:grid;
 } */
+.hide {
+  display:none;
+}
 </style>
-<script type="module">
-  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
-  mermaid.initialize({ startOnLoad: true });
-</script>
+
 <!-- header: "header" -->
 
 # abstract
@@ -79,14 +82,15 @@ figcaption{
 git clone https://github.com/AClon314/md2doc
 
 wget https://github.com/lierdakil/pandoc-crossref/releases/latest/download/pandoc-crossref-Linux-X64.tar.xz # 自动编号，下载后解压到PATH
-npm install -g puppeteer pandoc-mermaid-chartjs-filter
-# pnpm approve-builds -g
-sudo dnf install giflib-devel # linux依赖：apt install libgif-dev; yay giflib
 
-pip install pandoc-plantuml-filter
+wget https://github.com/LaurentRDC/pandoc-plot/releases/latest/download/pandoc-plot-Linux-x86_64.zip
 sudo dnf install graphviz # 还需要手动安装plantuml，见下方
 
 # pip install pandoc-tex-numbering  # tex → other
+
+# npm install -g puppeteer pandoc-mermaid-chartjs-filter
+# pnpm approve-builds -g
+# sudo dnf install giflib-devel # linux依赖：apt install libgif-dev; yay giflib
 ```
 
 ### plantuml
@@ -197,14 +201,23 @@ Write abstract here.
 
 ![invert](https://images7.memedroid.com/images/UPLOADED819/64a1d3e2c44ae.jpeg){#fig:ID}
 
-<!-- description -->
-```mermaid
-flowchart LR
-    A[Source] --> B{Condition}
+```dot
+digraph G {
+    rankdir=TB;
+    subgraph L {
+        rank = same;
+        b -> a [dir=back];  // b ← a
+    }
+    subgraph R {
+        rank = same;
+        c -> d;  // c → d
+    }
+    b -> c
+}
 ```
 
-```{.mermaid format=svg}
-%%{init:{"flowchart":{"htmlLabels":false}}}%%
+```mermaid
+%%{init: {'flowchart': {'padding': 0, 'useMaxWidth': false, 'htmlLabels': false}} }%%
 flowchart LR
     A[Source] --> B{Condition}
 ```

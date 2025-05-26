@@ -1,0 +1,9 @@
+dpi: 300
+
+plantuml:
+  executable: plantuml
+  command_line_arguments: -Sdpi=300 -theme plain -SdefaultFontName="NSimSun"
+
+mermaid:
+  executable: mmdc
+  command_line_arguments: --scale 3

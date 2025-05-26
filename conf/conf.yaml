@@ -5,8 +5,7 @@ filters:
   - conf/inline_code.lua
   - conf/pandoc-code-include/app.py
   - conf/abstract-section/abstract-section.lua  # https://github.com/pandoc-ext/abstract-section
-  - chart-filter  # https://github.com/nihilor/pandoc-mermaid-chartjs-filter
-  - pandoc-plantuml # https://github.com/timofurrer/pandoc-plantuml-filter
+  - pandoc-plot # 会有缓存，修改配置后需要删除plot/目录
   - conf/pandoc-figure-caption-patch/app.py
   - pandoc-crossref # ![图注]{#fig:ID} then [@fig:ID]
 

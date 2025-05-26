@@ -19,6 +19,7 @@
         "ctc.vscode-tree-extension",
         // word count
         "sharzyl.cjk-word-handler",
-        "geezmolycos.vscode-hanzi-counter"
+        "geezmolycos.vscode-hanzi-counter",
+        "prinorange.markdown-graphviz-preview"
     ]
 }
