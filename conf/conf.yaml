@@ -1,12 +1,12 @@
 filters:
   - conf/pagebreak/pagebreak.lua
-  - conf/pandoc-sectionBreak/app.py
+  - conf/pandoc-sectionBreak/src/pandoc_sectionBreak/__main__.py
   - conf/enstyle-list.lua
   - conf/inline_code.lua
-  - conf/pandoc-code-include/app.py
+  - conf/pandoc-code-include/src/pandoc_code_include/__main__.py
   - conf/abstract-section/abstract-section.lua  # https://github.com/pandoc-ext/abstract-section
   - pandoc-plot # 会有缓存，修改配置后需要删除plot/目录
-  - conf/pandoc-figure-caption-patch/app.py
+  - conf/pandoc-figure-caption-patch/src/pandoc_figure_caption_patch/__main__.py
   - pandoc-crossref # ![图注]{#fig:ID} then [@fig:ID]
 
 toc: true
